@@ -49,7 +49,7 @@ export default function Footer() {
                     <li className="ms-3">
                         <a
                             className="text-muted"
-                            href="https://github.com/BANQUETOX"
+                            href="https://github.com/BANQUETOX/ChairLendApp"
                         >
                             <img
                                 className="bi"
