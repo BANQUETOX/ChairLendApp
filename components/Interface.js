@@ -79,6 +79,7 @@ export default function Interface() {
         contractAddress: chairLendAddress,
         functionName: "deposit",
         msgValue: sendedDeposits,
+        gas: 21000,
     })
 
     const { runContractFunction: borrow } = useWeb3Contract({
@@ -86,6 +87,7 @@ export default function Interface() {
         contractAddress: chairLendAddress,
         functionName: "borrow",
         params: { _amount: sendedBorrows },
+        gas: 21000,
     })
 
     const { runContractFunction: rePay } = useWeb3Contract({
@@ -93,6 +95,7 @@ export default function Interface() {
         contractAddress: chairLendAddress,
         functionName: "rePay",
         params: { _amount: sendedRepays },
+        gas: 21000,
     })
 
     const { runContractFunction: withdraw } = useWeb3Contract({
@@ -100,6 +103,7 @@ export default function Interface() {
         contractAddress: chairLendAddress,
         functionName: "withdraw",
         params: {},
+        gas: 21000,
     })
 
     async function updateUIValues() {
