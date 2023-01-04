@@ -1136,9 +1136,9 @@
   "resolved" "https://registry.npmjs.org/@next/env/-/env-13.0.6.tgz"
   "version" "13.0.6"
 
-"@next/swc-win32-x64-msvc@13.0.6":
-  "integrity" "sha512-pSkqZ//UP/f2sS9T7IvHLfEWDPTX0vRyXJnAUNisKvO3eF3e1xdhDX7dix/X3Z3lnN4UjSwOzclAI87JFbOwmQ=="
-  "resolved" "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-13.0.6.tgz"
+"@next/swc-darwin-x64@13.0.6":
+  "integrity" "sha512-SasCDJlshglsPnbzhWaIF6VEGkQy2NECcAOxPwaPr0cwbbt4aUlZ7QmskNzgolr5eAjFS/xTr7CEeKJtZpAAtQ=="
+  "resolved" "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-13.0.6.tgz"
   "version" "13.0.6"
 
 "@noble/ed25519@^1.7.0":
@@ -3581,6 +3581,11 @@
   "resolved" "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   "version" "4.2.0"
 
+"fsevents@~2.3.2":
+  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  "version" "2.3.2"
+
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -5750,8 +5755,7 @@
     "is-typed-array" "^1.1.10"
 
 "wp5-cra-polyfill@github:oscario2/wp5-cra-polyfill#91431fa":
-  "integrity" "sha512-VEntbN5rmm1pZ9gDordsb5Dz/oOZpJnUyLE8oPPaEgqGAEVmNx6PKe3P0+kK0I5ESBU2LddZ90+EiZBhKZZhbw=="
-  "resolved" "https://codeload.github.com/oscario2/wp5-cra-polyfill/tar.gz/91431fa2c67aaa1247309e04799254a2e8a949d7"
+  "resolved" "git+ssh://git@github.com/oscario2/wp5-cra-polyfill.git#91431fa2c67aaa1247309e04799254a2e8a949d7"
   "version" "0.0.1"
   dependencies:
     "node-polyfill-webpack-plugin" "^1.1.4"

@@ -2,10 +2,15 @@ import { useWeb3Contract, useMoralis } from "react-moralis"
 import { abi, contractAddresses } from "../constants/index.js"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
-import { Check, useNotification } from "web3uikit"
+import { useNotification } from "web3uikit"
 
 export default function Interface() {
-    const { chainId: chainIdHex, isWeb3Enabled, account, Moralis } = useMoralis()
+    const {
+        chainId: chainIdHex,
+        isWeb3Enabled,
+        account,
+        Moralis,
+    } = useMoralis()
     const chainId = parseInt(chainIdHex)
     const chairLendAddress =
         chainId in contractAddresses ? contractAddresses[chainId][0] : null
@@ -73,102 +78,88 @@ export default function Interface() {
         functionName: "getUserBorrows",
         params: { _user: account },
     })
-    async function deposit(){
-        const ethers = Moralis.web3Library;
-        const web3Provider = await Moralis.enableWeb3(); 
-        const gasPrice = await web3Provider.getGasPrice();
+    async function deposit() {
+        const ethers = Moralis.web3Library
+        const web3Provider = await Moralis.enableWeb3()
+        const gasPrice = await web3Provider.getGasPrice()
 
-        const signer = web3Provider.getSigner();
+        const signer = web3Provider.getSigner()
 
-        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+        const contract = new ethers.Contract(chairLendAddress, abi, signer)
 
         const transaction = await contract.deposit({
-        value: sendedDeposits,
-        gasLimit: 50000,
-        gasPrice: gasPrice,
-         });
-         try{
+            value: sendedDeposits,
+            gasLimit: 50000,
+            gasPrice: gasPrice,
+        })
+        try {
             await transaction.wait()
             handleSuccees()
-
-        }
-        catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
-    async function borrow(){
-        const ethers = Moralis.web3Library;
-        const web3Provider = await Moralis.enableWeb3(); 
-        const gasPrice = await web3Provider.getGasPrice();
+    async function borrow() {
+        const ethers = Moralis.web3Library
+        const web3Provider = await Moralis.enableWeb3()
 
-        const signer = web3Provider.getSigner();
+        const signer = web3Provider.getSigner()
 
-        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+        const contract = new ethers.Contract(chairLendAddress, abi, signer)
 
-        const transaction = await contract.borrow({
-        gasLimit: 50000,
-        gasPrice: gasPrice,
-        });
-        try{
+        const transaction = await contract.borrow(sendedBorrows, {
+            gasPrice: ethers.utils.parseUnits("100", "gwei"),
+            gasLimit: 1000000,
+        })
+        try {
             await transaction.wait()
             handleSuccees()
-
+        } catch (error) {
+            handleBorrowErrorNotification()
         }
-        catch(error){
-            console.log(error)
-        }
-
     }
 
-    async function rePay(){
-        const ethers = Moralis.web3Library;
-        const web3Provider = await Moralis.enableWeb3(); 
-        const gasPrice = await web3Provider.getGasPrice();
+    async function rePay() {
+        const ethers = Moralis.web3Library
+        const web3Provider = await Moralis.enableWeb3()
+        const gasPrice = await web3Provider.getGasPrice()
 
-        const signer = web3Provider.getSigner();
+        const signer = web3Provider.getSigner()
 
-        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+        const contract = new ethers.Contract(chairLendAddress, abi, signer)
 
-        const transaction = await contract.rePay({
-        value: sendedRepays,
-        gasLimit: 50000,
-        gasPrice: gasPrice,
-        });
-        try{
+        const transaction = await contract.rePay(sendedRepays, {
+            gasPrice: ethers.utils.parseUnits("100", "gwei"),
+            gasLimit: 1000000,
+        })
+        try {
             await transaction.wait()
             await handleSuccees()
-
-        }
-        catch(error){
+        } catch (error) {
             handleRepayErrorNotification()
         }
-
     }
 
-    async function withdraw(){
-        const ethers = Moralis.web3Library;
-        const web3Provider = await Moralis.enableWeb3(); 
-        const gasPrice = await web3Provider.getGasPrice();
+    async function withdraw() {
+        const ethers = Moralis.web3Library
+        const web3Provider = await Moralis.enableWeb3()
+        const gasPrice = await web3Provider.getGasPrice()
 
-        const signer = web3Provider.getSigner();
+        const signer = web3Provider.getSigner()
 
-        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+        const contract = new ethers.Contract(chairLendAddress, abi, signer)
 
         const transaction = await contract.withdraw({
-        gasLimit: 50000,
-        gasPrice: gasPrice,
-        });
-        try{
+            gasPrice: ethers.utils.parseUnits("100", "gwei"),
+            gasLimit: 1000000,
+        })
+        try {
             await transaction.wait()
             handleSuccees()
-
-        }
-        catch(error){
+        } catch (error) {
             handleWithdrawErrorNotification()
         }
-
     }
-
 
     async function updateUIValues() {
         console.log("Updating values....")
@@ -270,7 +261,7 @@ export default function Interface() {
                                 >
                                     {isLoading || isFetching ? (
                                         <div
-                                            class="spinner-border"
+                                            className="spinner-border"
                                             role="status"
                                         ></div>
                                     ) : (
@@ -308,7 +299,7 @@ export default function Interface() {
                                     >
                                         {isLoading || isFetching ? (
                                             <div
-                                                class="spinner-border"
+                                                className="spinner-border"
                                                 role="status"
                                             ></div>
                                         ) : (
@@ -346,19 +337,18 @@ export default function Interface() {
                     </div>
                 </div>
             ) : (
-                <div class="px-4 py-5 my-5 text-center">
+                <div className="px-4 py-5 my-5 text-center">
                     <img
-                        class="d-block mx-auto mb-4"
+                        className="d-block mx-auto mb-4"
                         width="100"
                         height="100"
                         src="/error.png"
                     />
-                    <h1 class="display-5 fw-bold">Network error</h1>
-                    <div class="col-lg-6 mx-auto">
-                        <p class="lead mb-4">
-                             Please connect your wallet or
-                            switch to some of the supported networks "Mumbai
-                            testnet", "Polygon"
+                    <h1 className="display-5 fw-bold">Network error</h1>
+                    <div className="col-lg-6 mx-auto">
+                        <p className="lead mb-4">
+                            Please connect your wallet or switch to some of the
+                            supported networks "Mumbai testnet", "Polygon"
                         </p>
                     </div>
                 </div>
