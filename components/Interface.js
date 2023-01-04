@@ -5,7 +5,7 @@ import { ethers } from "ethers"
 import { Check, useNotification } from "web3uikit"
 
 export default function Interface() {
-    const { chainId: chainIdHex, isWeb3Enabled, account } = useMoralis()
+    const { chainId: chainIdHex, isWeb3Enabled, account, Moralis } = useMoralis()
     const chainId = parseInt(chainIdHex)
     const chairLendAddress =
         chainId in contractAddresses ? contractAddresses[chainId][0] : null
@@ -26,7 +26,7 @@ export default function Interface() {
             position: "topR",
         })
     }
-    const handleBrorrowErrorNotification = function () {
+    const handleBorrowErrorNotification = function () {
         dispatch({
             type: "error",
             message: "Try to reduce your borrow or add more deposits",
@@ -52,7 +52,6 @@ export default function Interface() {
         })
     }
     const handleSuccees = async function (tx) {
-        await tx.wait(1)
         handleNewNotification(tx)
         updateUIValues()
     }
@@ -74,37 +73,102 @@ export default function Interface() {
         functionName: "getUserBorrows",
         params: { _user: account },
     })
-    const { runContractFunction: deposit } = useWeb3Contract({
-        abi: abi,
-        contractAddress: chairLendAddress,
-        functionName: "deposit",
-        msgValue: sendedDeposits,
-        gas: 21000,
-    })
+    async function deposit(){
+        const ethers = Moralis.web3Library;
+        const web3Provider = await Moralis.enableWeb3(); 
+        const gasPrice = await web3Provider.getGasPrice();
 
-    const { runContractFunction: borrow } = useWeb3Contract({
-        abi: abi,
-        contractAddress: chairLendAddress,
-        functionName: "borrow",
-        params: { _amount: sendedBorrows },
-        gas: 21000,
-    })
+        const signer = web3Provider.getSigner();
 
-    const { runContractFunction: rePay } = useWeb3Contract({
-        abi: abi,
-        contractAddress: chairLendAddress,
-        functionName: "rePay",
-        params: { _amount: sendedRepays },
-        gas: 21000,
-    })
+        const contract = new ethers.Contract(chairLendAddress, abi, signer);
 
-    const { runContractFunction: withdraw } = useWeb3Contract({
-        abi: abi,
-        contractAddress: chairLendAddress,
-        functionName: "withdraw",
-        params: {},
-        gas: 21000,
-    })
+        const transaction = await contract.deposit({
+        value: sendedDeposits,
+        gasLimit: 50000,
+        gasPrice: gasPrice,
+         });
+         try{
+            await transaction.wait()
+            handleSuccees()
+
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+    async function borrow(){
+        const ethers = Moralis.web3Library;
+        const web3Provider = await Moralis.enableWeb3(); 
+        const gasPrice = await web3Provider.getGasPrice();
+
+        const signer = web3Provider.getSigner();
+
+        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+
+        const transaction = await contract.borrow({
+        gasLimit: 50000,
+        gasPrice: gasPrice,
+        });
+        try{
+            await transaction.wait()
+            handleSuccees()
+
+        }
+        catch(error){
+            console.log(error)
+        }
+
+    }
+
+    async function rePay(){
+        const ethers = Moralis.web3Library;
+        const web3Provider = await Moralis.enableWeb3(); 
+        const gasPrice = await web3Provider.getGasPrice();
+
+        const signer = web3Provider.getSigner();
+
+        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+
+        const transaction = await contract.rePay({
+        value: sendedRepays,
+        gasLimit: 50000,
+        gasPrice: gasPrice,
+        });
+        try{
+            await transaction.wait()
+            await handleSuccees()
+
+        }
+        catch(error){
+            handleRepayErrorNotification()
+        }
+
+    }
+
+    async function withdraw(){
+        const ethers = Moralis.web3Library;
+        const web3Provider = await Moralis.enableWeb3(); 
+        const gasPrice = await web3Provider.getGasPrice();
+
+        const signer = web3Provider.getSigner();
+
+        const contract = new ethers.Contract(chairLendAddress, abi, signer);
+
+        const transaction = await contract.withdraw({
+        gasLimit: 50000,
+        gasPrice: gasPrice,
+        });
+        try{
+            await transaction.wait()
+            handleSuccees()
+
+        }
+        catch(error){
+            handleWithdrawErrorNotification()
+        }
+
+    }
+
 
     async function updateUIValues() {
         console.log("Updating values....")
@@ -156,11 +220,7 @@ export default function Interface() {
                                 <button
                                     className="btn btn-primary mt-2"
                                     onClick={async function () {
-                                        await deposit({
-                                            onSuccess: handleSuccees,
-                                            onError: (error) =>
-                                                console.log(error),
-                                        })
+                                        await deposit()
                                     }}
                                     disabled={isLoading || isFetching}
                                 >
@@ -205,11 +265,7 @@ export default function Interface() {
                                     type="submit"
                                     value="Submit"
                                     onClick={async function () {
-                                        await borrow({
-                                            onSuccess: handleSuccees,
-                                            onError:
-                                                handleBrorrowErrorNotification,
-                                        })
+                                        await borrow()
                                     }}
                                 >
                                     {isLoading || isFetching ? (
@@ -247,11 +303,7 @@ export default function Interface() {
                                         type="submit"
                                         value="Submit"
                                         onClick={async function () {
-                                            await rePay({
-                                                onSuccess: handleSuccees,
-                                                onError:
-                                                    handleRepayErrorNotification,
-                                            })
+                                            await rePay()
                                         }}
                                     >
                                         {isLoading || isFetching ? (
@@ -276,11 +328,7 @@ export default function Interface() {
                                         type="submit"
                                         value="Submit"
                                         onClick={async function () {
-                                            await withdraw({
-                                                onSuccess: handleSuccees,
-                                                onError:
-                                                    handleWithdrawErrorNotification,
-                                            })
+                                            await withdraw()
                                         }}
                                     >
                                         {isLoading || isFetching ? (
@@ -308,7 +356,7 @@ export default function Interface() {
                     <h1 class="display-5 fw-bold">Network error</h1>
                     <div class="col-lg-6 mx-auto">
                         <p class="lead mb-4">
-                            This blockchain network is not suppporte yet, please
+                             Please connect your wallet or
                             switch to some of the supported networks "Mumbai
                             testnet", "Polygon"
                         </p>
