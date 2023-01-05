@@ -4,7 +4,8 @@ export default function Footer() {
             <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <div className="col-md-4 d-flex align-items-center">
                     <a
-                        href="/"
+                        href="https://felipeportfolio.on.fleek.co/"
+                        target="_blank"
                         className="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
                     >
                         <img
@@ -23,6 +24,7 @@ export default function Footer() {
                     <li className="ms-3">
                         <a
                             className="text-muted"
+                            target="_blank"
                             href="https://twitter.com/BANQUETOX"
                         >
                             <img
@@ -49,6 +51,7 @@ export default function Footer() {
                     <li className="ms-3">
                         <a
                             className="text-muted"
+                            target="_blank"
                             href="https://github.com/BANQUETOX/ChairLendApp"
                         >
                             <img
